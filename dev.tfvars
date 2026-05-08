@@ -41,7 +41,11 @@ kubernetes_version      = "1.30"
 endpoint_private_access = true
 endpoint_public_access  = false
 
-instance_types   = ["t3.medium"]
+# instance_types   = ["t3.medium"]
+instance_types   = ["t3a.small"]
 desired_capacity = 1
 min_capacity     = 1
 max_capacity     = 5
+
+# Exteranl Secrets 
+namespace = "secrets"

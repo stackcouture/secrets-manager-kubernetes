@@ -69,6 +69,8 @@ module "iam" {
   is_eks_role_enabled           = var.is_eks_role_enabled
   oidc_provider_arn             = module.eks.oidc_provider_arn
   oidc_provider_url             = module.eks.oidc_provider_url
+
+  namespace = var.namespace
 }
 
 module "eks" {

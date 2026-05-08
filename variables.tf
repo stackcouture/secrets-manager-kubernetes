@@ -148,3 +148,8 @@ variable "instance_types" {
   type        = list(string)
   description = "Instance Types"
 }
+
+variable "namespace" {
+  type        = string
+  description = "Secrets Namespace"
+}

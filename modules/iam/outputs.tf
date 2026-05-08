@@ -5,3 +5,7 @@ output "eks_cluster_role_arn" {
 output "eks_nodegroup_role_arn" {
   value = aws_iam_role.eks_nodegroup_role[0].arn
 }
+
+output "eso_role_arn" {
+  value = aws_iam_role.eso.arn
+}

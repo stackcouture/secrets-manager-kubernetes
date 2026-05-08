@@ -118,3 +118,54 @@ resource "aws_iam_role_policy_attachment" "eks-oidc-policy-attachment" {
   role       = aws_iam_role.eks_oidc_role.name
   policy_arn = aws_iam_policy.eks_oidc_policy.arn
 }
+
+# External Secrets IRSA
+data "aws_iam_policy_document" "assume_role_secrets" {
+  statement {
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+
+    principals {
+      type        = "Federated"
+      identifiers = [var.oidc_provider_arn]
+    }
+    condition {
+      test     = "StringEquals"
+      variable = "${replace(var.oidc_provider_url, "https://", "")}:sub"
+      values = [
+        "system:serviceaccount:${var.namespace}:external-secrets-sa"
+      ]
+    }
+  }
+}
+
+resource "aws_iam_role" "eso" {
+  name               = "${var.cluster_name}-eso-irsa"
+  assume_role_policy = data.aws_iam_policy_document.assume_role_secrets.json
+}
+
+resource "aws_iam_policy" "eso" {
+  name = "${var.cluster_name}-eso-policy"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+
+        Action = [
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:DescribeSecret"
+        ]
+
+        Resource = [
+          "arn:aws:secretsmanager:${local.region}:${local.account_id}:secret:prod/*"
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "attach" {
+  role       = aws_iam_role.eso.name
+  policy_arn = aws_iam_policy.eso.arn
+}
+
