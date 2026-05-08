@@ -35,3 +35,13 @@ sg_description = "Security group for EKS cluster"
 is_eks_role_enabled           = true
 is_eks_nodegroup_role_enabled = true
 aws_region                    = "ap-south-1"
+
+is_eks_cluster_enabled  = true
+kubernetes_version      = "1.30"
+endpoint_private_access = true
+endpoint_public_access  = false
+
+instance_types   = ["t3.medium"]
+desired_capacity = 1
+min_capacity     = 1
+max_capacity     = 5
